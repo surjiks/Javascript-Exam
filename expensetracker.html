@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            background-color: #f0f8ff;
+            text-align: center;
+            font-size: larger;
+        }
+        ul{
+            list-style-type: none;
+        }   
+        button{
+            height: 30px;
+            border-radius: 5px;
+        }
+        input{
+            height: 30px;
+        }
+        #output{
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Expense Tracker</h1>
+    <label for="expense">Add expense :</label>
+    <input type="text" id="expense" placeholder="Enter description">
+    <label for="amount">Amount :</label>
+    <input type="number" id="amount" placeholder="Enter amount">
+    <button onclick="addExpense()">Add Expense</button><br><br>
+    <button onclick="viewAll()">View All Expenses</button>
+    <ul id="expenseOutput"></ul>
+    <button onclick="findTotal()">Total Expenses</button>
+    <span id="total"></span>
+    <ul id="output"></ul>
+
+
+    <script>
+        expenses = []
+        amounts = []
+
+        function addExpense(){
+            const expenseInput = document.getElementById('expense')
+            const amountInput =  document.getElementById('amount')
+            const expense = expenseInput.value.trim()
+            const amount = amountInput.value.trim()
+
+            if(expense!=='' && amount!==''){
+                expenses.push(expense)
+                amounts.push(amount)
+                doTask(expense,amount)
+                expenseInput.value =''
+                amountInput.value=''
+            }
+        }
+
+        function doTask(expense,amount){
+            const output = document.getElementById('output')
+            const li = document.createElement('li')
+            li.textContent = `Description : ${expense}, Amount : ${amount}`
+
+            //update Button
+            const updateButton = document.createElement("button")
+            updateButton.textContent = "Update"
+
+            updateButton.onclick = function(){
+                let nwExpense = prompt("Edit Expense : ", expense)
+                let nwAmount = prompt("Edit amount : ", amount)
+                let amountIndex = amounts.indexOf(amount)
+                let expenseIndex = expenses.indexOf(expense)
+                amounts[amountIndex] = nwAmount;
+                expenses[expenseIndex] = nwExpense;
+                li.firstChild.textContent = `Description : ${nwExpense}, Amount : ${nwAmount}`
+                
+
+            }
+            li.appendChild(updateButton)
+
+            //delete button
+            const deleteButton = document.createElement("button")
+            deleteButton.textContent = "Delete"
+
+            deleteButton.onclick = function(){
+                output.removeChild(li)
+
+                const expenseIndex = expenses.indexOf(expense)
+                expenses.splice(expenseIndex,1)
+                amounts.splice(expenseIndex,1)
+
+            }
+            li.appendChild(deleteButton)
+
+
+            output.appendChild(li)
+        }
+
+
+        function findTotal(){
+            const totalInput = document.getElementById('total')
+           
+                let total = 0
+                for(let i=0;i<amounts.length;i++){
+                   total += Number(amounts[i]);
+                }
+            
+            totalInput.textContent = `Total Expense : ${total}`
+        }
+
+        function viewAll(){
+            const expenseOutput = document.getElementById("expenseOutput")
+             
+            if(expenses.length>0){
+                for(let i=0;i<expenses.length;i++){
+                    const li = document.createElement("li")
+                    li.textContent = `Description : ${expenses[i]}, Amounts : ${amounts[i]}`
+                    expenseOutput.appendChild(li)
+                }
+                
+            }else{
+                expenseOutput.textContent = 'no items'
+            }
+        }
+    </script>
+</body>
+</html>
+
